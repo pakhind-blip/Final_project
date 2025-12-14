@@ -6,6 +6,12 @@ from tkinter import ttk
 import threading, time, json, requests, websocket
 
 
+import tkinter as tk
+from tkinter import ttk
+import threading, time, json, requests, websocket
+
+
+# การ์ดราคา 1 เหรียญ ต่อ ws แล้วอัปเดตตัวเลข
 class TickerCard:
     def __init__(self, parent, pair_ws, title):
         self.parent = parent
@@ -16,8 +22,6 @@ class TickerCard:
 
         self.frame = ttk.Frame(parent, padding=16, style="Card.TFrame")
         ttk.Label(self.frame, text=self.title, style="Title.TLabel").pack(pady=(0, 8))
-
-        # you forgot these labels (update_ui uses them)
         self.price_label = tk.Label(
             self.frame, text="--,---",
             font=("Segoe UI", 30, "bold"),
@@ -77,6 +81,7 @@ class TickerCard:
         self.frame.pack_forget()
 
 
+# แผงขวา ดึง volume / orderbook / trades แบบวนๆ
 class RightPanel:
     def __init__(self, parent, start_display, start_symbol):
         self.parent = parent
@@ -165,11 +170,11 @@ class RightPanel:
                 bids = d.get("bids", [])
                 asks = d.get("asks", [])
 
-                lines = ["BIDS (Buy)"]
+                lines = ["BIDS"]
                 for p, q in bids:
                     lines.append(f"{float(p):>12,.2f}  {float(q):>10.4f}")
                 lines.append("")
-                lines.append("ASKS (Sell)")
+                lines.append("ASKS")
                 for p, q in asks:
                     lines.append(f"{float(p):>12,.2f}  {float(q):>10.4f}")
 
@@ -196,6 +201,7 @@ class RightPanel:
             time.sleep(3)
 
 
+# ตัวหลัก จัดหน้าจอ ปุ่ม toggle แล้วคุม start/stop
 class DashboardApp:
     def __init__(self, root):
         self.root = root
@@ -253,8 +259,6 @@ class DashboardApp:
         self.btc.pack(side="left", expand=True, fill="both", padx=8, pady=8)
         self.eth.pack(side="left", expand=True, fill="both", padx=8, pady=8)
         self.sol.pack(side="left", expand=True, fill="both", padx=8, pady=8)
-
-        # now start exists
         self.btc.start()
         self.eth.start()
         self.sol.start()
